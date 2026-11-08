@@ -76,24 +76,72 @@ with st.form('applicant'):
     semester=c2.number_input('Current semester',1,30,4)
     discipline=c3.number_input('Disciplinary actions',0,100,0)
     submitted=st.form_submit_button('Evaluate scholarship',type='primary',use_container_width=True)
+
 if submitted:
     if rules is None:
-        st.error('Please fix the JSON configuration before evaluation.')
+        st.error("Please fix the JSON configuration before evaluation.")
     else:
-        applicant={'cgpa':cgpa,'family_income':income,'co_curricular_score':cocurricular,'community_service_hours':hours,'semester':semester,'disciplinary_actions':discipline}
-        winner,trace=evaluate(applicant,rules)
+        applicant = {
+            "cgpa": cgpa,
+            "family_income": income,
+            "co_curricular_score": cocurricular,
+            "community_service_hours": hours,
+            "semester": semester,
+            "disciplinary_actions": discipline
+        }
+
+        winner, trace = evaluate(applicant, rules)
+
         st.divider()
-        st.subheader('Decision and explanation')
-        if winner:
-            st.success(f"Recommendation: {winner['action']['decision']}") if winner['action']['decision']!='REJECT' else st.error('Recommendation: REJECT')
-            st.write(f"**Winning rule:** {winner['name']} (priority {winner['priority']})")
-            st.write(f"**Reason:** {winner['action']['reason']}")
+        st.subheader("Decision and explanation")
+
+        if winner is not None:
+            decision = winner["action"]["decision"]
+            reason = winner["action"]["reason"]
+
+            if decision == "REJECT":
+                st.error(f"Recommendation: {decision}")
+            elif decision == "REVIEW":
+                st.warning(f"Recommendation: {decision}")
+            else:
+                st.success(f"Recommendation: {decision}")
+
+            st.write(f"**Matched rule:** {winner['name']}")
+            st.write(f"**Priority:** {winner['priority']}")
+            st.write(f"**Reason:** {reason}")
+
         else:
-            st.warning('NO_MATCH — No supplied rule applies. Refer to the scholarship committee for manual assessment.')
-        st.write('**Rule evaluation audit trail**')
-        for item in sorted(trace,key=lambda x:-x['priority']):
-            with st.expander(f"{'✅' if item['matched'] else '❌'} {item['rule']} | Priority {item['priority']}"):
-                for check in item['checks']:
-                    st.write(f"{'✓' if check['passed'] else '✗'} {check['condition']}")
-        st.info('Community service hours and semester are recorded but do not affect decisions under the supplied five rules.')
-        st.download_button('Download decision audit (JSON)',json.dumps({'applicant':applicant,'decision':winner['action'] if winner else {'decision':'NO_MATCH','reason':'No rule matched'},'trace':trace},indent=2),file_name='scholarship_audit.json',mime='application/json')
+            st.warning(
+                "NO_MATCH — No supplied rule applies. "
+                "Refer to the scholarship committee for manual assessment."
+            )
+
+        st.write("**Rule evaluation audit trail**")
+
+        for item in sorted(trace, key=lambda x: -x["priority"]):
+            with st.expander(
+                f"{'✅' if item['matched'] else '❌'} "
+                f"{item['rule']} | Priority {item['priority']}"
+            ):
+                for check in item["checks"]:
+                    symbol = "✓" if check["passed"] else "✗"
+                    st.write(f"{symbol} {check['condition']}")
+
+        st.info(
+            "Community service hours and semester are recorded "
+            "but do not affect decisions under the supplied five rules."
+        )
+
+        st.download_button(
+            "Download decision audit (JSON)",
+            json.dumps({
+                "applicant": applicant,
+                "decision": winner["action"] if winner else {
+                    "decision": "NO_MATCH",
+                    "reason": "No rule matched"
+                },
+                "trace": trace
+            }, indent=2),
+            file_name="scholarship_audit.json",
+            mime="application/json"
+        )
