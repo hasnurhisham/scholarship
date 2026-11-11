@@ -61,7 +61,7 @@ The default rules are preserved as specified in the assignment. Users may modify
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY.git
+git clone https://github.com/hasnurhisham/YOUR-REPOSITORY.git](https://github.com/hasnurhisham/scholarship.git
 cd YOUR-REPOSITORY
 ```
 
@@ -122,20 +122,12 @@ Screenshots should demonstrate the application interface and its rule-based deci
 
 ## Deployment
 
-**Live Streamlit Application:** [Insert deployed application URL]
+**Live Streamlit Application:**  https://lab-report1-dfs-bfs.streamlit.app 
 
-**GitHub Repository:** [Insert GitHub repository URL]
+**GitHub Repository:** https://github.com/hasnurhisham/scholarship.git
 
 ## Limitations
 
 The system relies on predefined scholarship eligibility rules and cannot independently evaluate exceptional applicant circumstances. Community service hours and current semester are collected but do not influence recommendations under the five default rules.
 
 Therefore, the system is intended as a decision-support tool, and final scholarship decisions should remain subject to committee approval.
-
-## Project Information
-
-**Course:** BSD3513 Artificial Intelligence  
-**Assessment:** Lab Report 3 – Knowledge Representation System  
-**Application:** Scholarship Advisory Rule-Based System  
-**Developer:** [Your name]  
-**Institution:** Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)
